@@ -3,6 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once __DIR__.'/base_controller.php';
 class Main extends Base_controller {
     protected $title; 
+    protected  $success_message;
+    protected  $error_message;
+    
     public function __construct() {
         parent::__construct();
     }
@@ -15,9 +18,56 @@ class Main extends Base_controller {
     
     
     public function login() {
-        $view_html  = $this->load->view('login',null,TRUE);
-        $this->title = 'Login';
+        
+        $view_html = '';
+        //check if it is post
+
+        if($this->input->method(TRUE) == 'POST') {
+            $user_login     = $this->input->post('txt-email');
+            $user_password  = $this->input->post('txt-password');
+            if($user_login != '' && $user_password != '') {
+                if($this->validate_user($user_login, $user_password)) {
+                    //get user complete object
+                    $view_html = 'Successfull Login';
+                } else {
+                    $this->error_message = 'Email and password does not match.';
+                    $data = array(
+                        'error_message' => $this->error_message
+                    );
+                    $view_html  = $this->load->view('login',$data,TRUE);
+                }
+            } else {
+                $this->error_message = 'Please provide valid email and password.';
+                $data = array(
+                    'error_message' => $this->error_message
+                );
+                $view_html  = $this->load->view('login',$data,TRUE);
+            }
+            
+        } else {
+            $view_html  = $this->load->view('login',null,TRUE);
+            $this->title = 'Login';
+        }
         $this->load_view($view_html);
+    }
+    
+    private function validate_user($user_name, $password) {
+        $this->load->model('user_model','user');
+        $where_array = array(
+            'email' => $user_name
+        );
+        $user_data = $this->user->get($where_array);
+        if(!empty($user_data)) {
+            $user_data = $user_data[0];
+            if($user_data['password'] == $password) {
+                return TRUE;
+            } else {
+                return FALSE;
+            }
+        } else {
+            return FALSE;
+        }
+        
     }
     
     public function import() {
