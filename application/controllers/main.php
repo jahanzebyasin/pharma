@@ -2,9 +2,13 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 require_once __DIR__.'/base_controller.php';
 class Main extends Base_controller {
-    protected $title; 
-    protected  $success_message;
-    protected  $error_message;
+    protected   $title; 
+    protected   $success_message;
+    protected   $error_message;
+    //call type checks for the ajax call vs normal browser call with agent headers
+    // if ajax call_type = 'xhr';
+    // default calltype = 'NULL'
+    protected   $call_type = null;
     
     public function __construct() {
         parent::__construct();
@@ -26,9 +30,18 @@ class Main extends Base_controller {
             $user_login     = $this->input->post('txt-email');
             $user_password  = $this->input->post('txt-password');
             if($user_login != '' && $user_password != '') {
-                if($this->validate_user($user_login, $user_password)) {
-                    //get user complete object
-                    $view_html = 'Successfull Login';
+                if(($user_id = $this->validate_user($user_login, $user_password)) != 0) {
+                    //get user complete object';
+                    $this->load->model('user_model','user');
+                    $where_array = array(
+                        'id' => $user_id
+                    );
+                    $user_object = $this->user->get($where_array)->to_array();
+                    
+                    //set session
+                    $this->session->set_userdata('user_data',$user_object[0]);
+                    redirect('user/profile');
+                    
                 } else {
                     $this->error_message = 'Email and password does not match.';
                     $data = array(
@@ -56,16 +69,16 @@ class Main extends Base_controller {
         $where_array = array(
             'email' => $user_name
         );
-        $user_data = $this->user->get($where_array);
+        $user_data = $this->user->get($where_array)->to_array();
         if(!empty($user_data)) {
             $user_data = $user_data[0];
             if($user_data['password'] == $password) {
-                return TRUE;
+                return $user_data['id'];
             } else {
-                return FALSE;
+                return 0;
             }
         } else {
-            return FALSE;
+            return 0;
         }
         
     }
