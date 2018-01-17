@@ -5,10 +5,7 @@ class Main extends Base_controller {
     protected   $title; 
     protected   $success_message;
     protected   $error_message;
-    //call type checks for the ajax call vs normal browser call with agent headers
-    // if ajax call_type = 'xhr';
-    // default calltype = 'NULL'
-    protected   $call_type = null;
+   
     
     public function __construct() {
         parent::__construct();
@@ -33,11 +30,8 @@ class Main extends Base_controller {
                 if(($user_id = $this->validate_user($user_login, $user_password)) != 0) {
                     //get user complete object';
                     $this->load->model('user_model','user');
-                    $where_array = array(
-                        'id' => $user_id
-                    );
-                    $user_object = $this->user->get($where_array)->to_array();
-                    
+                    $this->user->id = $user_id;
+                    $user_object = $this->user->get()->to_array();
                     //set session
                     $this->session->set_userdata('user_data',$user_object[0]);
                     redirect('user/profile');
@@ -66,10 +60,8 @@ class Main extends Base_controller {
     
     private function validate_user($user_name, $password) {
         $this->load->model('user_model','user');
-        $where_array = array(
-            'email' => $user_name
-        );
-        $user_data = $this->user->get($where_array)->to_array();
+        $this->user->email = $user_name;
+        $user_data = $this->user->get()->to_array();
         if(!empty($user_data)) {
             $user_data = $user_data[0];
             if($user_data['password'] == $password) {
