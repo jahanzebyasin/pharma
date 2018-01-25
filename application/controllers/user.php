@@ -14,7 +14,6 @@ class User extends Base_controller {
         //check for session
         if(is_user_logged_in()) {
             //TODO: Manage users routine tasks
-            
         } else {
             //redirect to login
             redirect('main/login');

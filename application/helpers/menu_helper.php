@@ -3,9 +3,9 @@
 if( !function_exists('helper_get_menu_items') ) {
     function helper_get_menu_items() {
         $ci = & get_instance();
-        $user_session = $ci->session->userdata('user');
+        $user_session = $ci->session->userdata('user_data');
         if($user_session != null) {
-            return helper_get_user_menu($user_role);
+            return helper_get_user_menu($user_session['role_id']);
         } else {
             return array( 
                 'Login' => 'main/login',
@@ -19,43 +19,27 @@ if( !function_exists('helper_get_menu_items') ) {
 
 if( !function_exists('helper_get_user_menu') ) {
     function helper_get_user_menu($user_role = null) {
-            if($user_role == null) {
-                return array( 
-                    'Login' => 'main/login',
-                    'Register' => 'main/register'
-                );
-            }
-            /*
-             * TODO: Later get from DB
-             */
-           $menu = array();
-            switch ($user_role) {
-                case 1: // Guest
-                    $menu = array( 
-                        'Login' => 'main/login',
-                        'Register' => 'main/register'
-                    );
-                    break;
-                case 2: // Registered
-                    $menu = array( 
-                        'Profile' => 'user/profile',
-                        'Logout' => 'main/logout'
-                    );
-                    break;
-                case 3: // Admin
-                    break;
-                case 4: // Super Admin
-                    break;
-                default:
-                     $menu = array( 
-                        'Login' => 'main/login',
-                        'Register' => 'main/register'
-                    );
-                    break;
-                    
+            $ci =& get_instance();
+            $ci->load->model('menu_model','menu');
+            $ci->menu->role_id = $user_role;
+            $menu_list = $ci->menu->get()->to_array();
+            if($menu_list) {
+                $menu_arr = array();
+                foreach($menu_list as $menu_item) {
+                    $menu_arr[$menu_item['menu_title']] = $menu_item['menu_link'];
+                }
+                return $menu_arr;
+            } else {
+                $ci->menu->role_id = DEFAULTS::$DEFAULT_GUEST_ROLE;
+                $menu_list = $ci->menu->get()->to_array();
+                $menu_arr = array();
+                foreach($menu_list as $menu_item) {
+                    $menu_arr[$menu_item['menu_title']] = $menu_item['menu_link'];
+                }
+                return $menu_arr;
             }
             
-            return $menu;
+      //      die();
             
         }
 }

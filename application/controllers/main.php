@@ -18,11 +18,14 @@ class Main extends Base_controller {
     }
     
     
+    public function logout() {
+        $this->session->unset_userdata('user_data');
+        redirect('user/profile');
+    }
+    
     public function login() {
-        
         $view_html = '';
         //check if it is post
-
         if($this->input->method(TRUE) == 'POST') {
             $user_login     = $this->input->post('txt-email');
             $user_password  = $this->input->post('txt-password');
@@ -35,7 +38,6 @@ class Main extends Base_controller {
                     //set session
                     $this->session->set_userdata('user_data',$user_object[0]);
                     redirect('user/profile');
-                    
                 } else {
                     $this->error_message = 'Email and password does not match.';
                     $data = array(

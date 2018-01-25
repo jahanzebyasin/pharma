@@ -1,6 +1,6 @@
 <?php
 require __DIR__.'/db_object_interface.php';
-class Base_model extends CI_Model implements Db_object_interface  {
+class Base_model extends CI_Model {
 
     private     $result_set     = null;
     private     $table_rows     = null;
@@ -39,21 +39,49 @@ class Base_model extends CI_Model implements Db_object_interface  {
     /*
      * CURD Functions
      */
-    public function insert($data) {
-        $this->db->insert($this->table_name,$data);
+    public function insert($data = null) {
+        if($data != null) {
+            $this->db->insert($this->table_name,$data);
+        } else {
+            $data = array();
+             foreach($this->table_rows as $key => $value) {
+                if($this->$value != null) {
+                    $data[$value] = $this->$value;
+                }
+            }
+            $this->db->insert($this->table_name,$data);
+        }
     }
     
-    public function update($id ,$data) {
-        $this->db->where('id', $id);
-        $this->db->update($this->table_name, $data); 
+    public function update($id = null ,$data = null) {
+        if($id && $data) {
+            $this->db->where('id', $id);
+            $this->db->update($this->table_name, $data); 
+        } else {
+            $data = array();
+            foreach($this->table_rows as $key => $value) {
+                if($this->$value != null) {
+                    $data[$value] = $this->$value;
+                }
+            }
+            $this->db->update($this->table_name, $data); 
+        }
     }
     
-    public function delete($id) {
-        $this->db->delete($this->table_name, array('id' => $id)); 
+    public function delete($id = null) {
+        if($id != null) {
+            $this->db->delete($this->table_name, array('id' => $id)); 
+        } else {
+             foreach($this->table_rows as $key => $value) {
+                if($this->$value != null) {
+                    $this->db->where($value,$this->$value);
+                }
+            }
+            $this->db->delete($this->table_name);
+        }
     }
     
     public function get($where_array = null, $offset = null, $limit = null) {        
-        
         if($where_array) {
             $this->db->select('*');
             $this->db->from($this->table_name);
@@ -101,16 +129,29 @@ class Base_model extends CI_Model implements Db_object_interface  {
     /*
      * Converstion function
      */
-    public function to_array() {
-        return $this->result_set->result_array();
+    public function to_array($return = null) {
+        if($this->result_set->num_rows() > 0) {
+            return $this->result_set->result_array();
+        } else {
+            return $return;
+        }
     }
     
-     public function to_row() {
-        return $this->result_set->result_row();
+     public function to_row($return = null) {
+         if($this->result_set->num_rows() > 0) {
+            return $this->result_set->result_row();
+        } else {
+            return $return;
+        }
     }
     
-     public function to_object() {
-        return $this->result_set->result();
+     public function to_object($return = null) {
+         if($this->result_set->num_rows() > 0) {
+            return $this->result_set->result();
+        } else {
+            return $return;
+        }
+        
     }
     
     
