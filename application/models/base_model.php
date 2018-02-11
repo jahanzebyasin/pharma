@@ -2,8 +2,8 @@
 require __DIR__.'/db_object_interface.php';
 class Base_model extends CI_Model {
 
-    private     $result_set     = null;
-    private     $table_rows     = null;
+    protected   $result_set     = null;
+    protected   $table_rows     = null;
     protected   $limit          = null;
     protected   $offset         = null;
     
@@ -15,11 +15,11 @@ class Base_model extends CI_Model {
     }
    
     
-     private function fields() {
+    protected function fields() {
         return $this->db->list_fields($this->table_name);
     }
     
-    private function create_properties() {
+    protected function create_properties() {
         if(isset($this->result_set) && $this->result_set->num_rows() > 0 && $this->result_set->num_rows() == 1) {
             $result = $this->result_set->result_array();
             $result = $result[0];

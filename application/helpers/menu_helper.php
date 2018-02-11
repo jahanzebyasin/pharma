@@ -1,46 +1,27 @@
 <?php
-
-if( !function_exists('helper_get_menu_items') ) {
-    function helper_get_menu_items() {
-        $ci = & get_instance();
-        $user_session = $ci->session->userdata('user_data');
-        if($user_session != null) {
-            return helper_get_user_menu($user_session['role_id']);
-        } else {
-            return array( 
-                'Login' => 'main/login',
-                'Register' => 'main/register'
-            );
-        }
-    }
-}
-
-
-
 if( !function_exists('helper_get_user_menu') ) {
-    function helper_get_user_menu($user_role = null) {
+    function helper_get_user_menu($user_role = null,$menu_type = 0) {
             $ci =& get_instance();
             $ci->load->model('menu_model','menu');
             $ci->menu->role_id = $user_role;
-            $menu_list = $ci->menu->get()->to_array();
-            if($menu_list) {
-                $menu_arr = array();
-                foreach($menu_list as $menu_item) {
-                    $menu_arr[$menu_item['menu_title']] = $menu_item['menu_link'];
+            $ci->menu->menu_type = $menu_type;
+            $menu_list = $ci->menu->get_top_level_menu()->to_array(array());
+            $menu_array = array();
+            $temp_ignore = array();
+            foreach($menu_list as $menu_item) {
+                $menu_item['sub_menu'] = array();
+                //check if it has child 
+                $ci->menu->menu_parent = $menu_item['id'];
+                $menu_item['sub_menu'] = $ci->menu->get()->to_array(array());
+                foreach($menu_item['sub_menu'] as $sub_menu_item) {
+                    array_push($temp_ignore, $sub_menu_item['id']);
                 }
-                return $menu_arr;
-            } else {
-                $ci->menu->role_id = DEFAULTS::$DEFAULT_GUEST_ROLE;
-                $menu_list = $ci->menu->get()->to_array();
-                $menu_arr = array();
-                foreach($menu_list as $menu_item) {
-                    $menu_arr[$menu_item['menu_title']] = $menu_item['menu_link'];
+                if(!in_array($menu_item['id'], $temp_ignore)) {
+                    array_push($menu_array,$menu_item);
                 }
-                return $menu_arr;
             }
-            
       //      die();
-            
+            return $menu_array;
         }
 }
 

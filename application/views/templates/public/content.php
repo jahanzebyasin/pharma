@@ -1,6 +1,3 @@
-    <!-- Navigation -->
-   <?php include 'menu.php'; ?>
-
     <!-- Page Content -->
     <div class="container">
       <?php

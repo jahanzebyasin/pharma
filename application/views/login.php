@@ -1,36 +1,96 @@
-<div id="div-login-form">
-    <!-- login form -->
-    
-    <div class="row" style="margin-top: 25%;">
-            <div class="col">
-            </div>
-            <div class="col">
-                
-              <?php if(isset($error_message) && $error_message != '') { ?>
-                <div style="color: red; height: 10px; margin-bottom: 10px;"><?php echo $error_message; ?></div>
-              <?php } ?>
-              <div style="background-color: #8064A2; height: 10px; margin-bottom: 10px;"></div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title><?php echo 'PHARMA'; ?> | Login </title>
+
+    <!-- Bootstrap -->
+    <link href="<?php echo base_url(); ?>www/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="<?php echo base_url(); ?>www/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="<?php echo base_url(); ?>www/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="<?php echo base_url(); ?>www/vendors/animate.css/animate.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="<?php echo base_url(); ?>www/build/css/custom.min.css" rel="stylesheet">
+  </head>
+
+  <body class="login">
+    <div>
+      <a class="hiddenanchor" id="signup"></a>
+      <a class="hiddenanchor" id="signin"></a>
+
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
               <form method="POST">
-                <div class="form-group">
-                    <label class="label-text-color " for="txt-email"><b>Email address</b></label>
-                  <input type="email" class="form-control" id="txt-email" name="txt-email" aria-describedby="emailHelp" placeholder="Enter email">
-                  <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                </div>
-                <div class="form-group">
-                    <label class="label-text-color " for="txt-password"><b>Password</b></label>
-                  <input type="password" class="form-control" id="txt-password" name="txt-password" placeholder="Password">
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="chk-remember-me">
-                  <label class="label-text-color" class="form-check-label" for="chk-remember-me">Remember</label>
-                </div>
-                  <div class="form-group" style="margin-top: 15px;">
-                   <button type="submit" class="btn btn-primary">Sign in</button>
-                </div>
-                
-              </form>
-            </div>
-            <div class="col">
-            </div>
-       </div>
-</div>
+              <h1>Login Form</h1>
+              <div>
+                <input type="text" class="form-control" name="txt-email" id="txt-email" placeholder="Username" required="" />
+              </div>
+              <div>
+                <input type="password" class="form-control" name="txt-password" id="txt-password" placeholder="Password" required="" />
+              </div>
+              <div>
+                  <button type="SUBMIT" class="btn btn-default submit">Log in</button>
+                <a class="reset_pass" href="#">Lost your password?</a>
+              </div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+                <p class="change_link">New to site?
+                  <a href="#signup" class="to_register"> Create Account </a>
+                </p>
+
+                <div class="clearfix"></div>
+                <br />
+
+              
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <div id="register" class="animate form registration_form">
+          <section class="login_content">
+            <form>
+              <h1>Create Account</h1>
+              <div>
+                <input type="text" class="form-control" placeholder="Username" required="" />
+              </div>
+              <div>
+                <input type="email" class="form-control" placeholder="Email" required="" />
+              </div>
+              <div>
+                <input type="password" class="form-control" placeholder="Password" required="" />
+              </div>
+              <div>
+                <a class="btn btn-default submit" href="index.html">Submit</a>
+              </div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+                <p class="change_link">Already a member ?
+                  <a href="#signin" class="to_register"> Log in </a>
+                </p>
+
+                <div class="clearfix"></div>
+                <br />
+
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

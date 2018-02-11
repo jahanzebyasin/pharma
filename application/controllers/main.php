@@ -26,6 +26,7 @@ class Main extends Base_controller {
     public function login() {
         $view_html = '';
         //check if it is post
+        $data = array();
         if($this->input->method(TRUE) == 'POST') {
             $user_login     = $this->input->post('txt-email');
             $user_password  = $this->input->post('txt-password');
@@ -43,21 +44,19 @@ class Main extends Base_controller {
                     $data = array(
                         'error_message' => $this->error_message
                     );
-                    $view_html  = $this->load->view('login',$data,TRUE);
+                    $this->load->view('login',$data);
                 }
             } else {
                 $this->error_message = 'Please provide valid email and password.';
                 $data = array(
                     'error_message' => $this->error_message
                 );
-                $view_html  = $this->load->view('login',$data,TRUE);
+                $this->load->view('login',$data);
             }
             
         } else {
-            $view_html  = $this->load->view('login',null,TRUE);
-            $this->title = 'Login';
+            $this->load->view('login');
         }
-        $this->load_view($view_html);
     }
     
     private function validate_user($user_name, $password) {
@@ -75,6 +74,12 @@ class Main extends Base_controller {
             return 0;
         }
         
+    }
+    
+    public function register() {
+        $view_html  = $this->load->view('register',null,true);
+        $this->title = 'Register';
+        $this->load_view($view_html);
     }
     
     public function import() {
